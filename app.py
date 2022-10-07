@@ -1,5 +1,5 @@
 # modules to make this work, flask for api end point, dbhelpers for connection, json for data in json
-from flask import Flask, request
+from flask import Flask, request, make_response, jsonify
 import dbhelpers as dh
 import json
 import apihelper as a
@@ -24,12 +24,12 @@ def add_new_client():
 
     result = dh.run_statement('CALL add_new_client(?,?,?)', 
     [username, password, is_premium])
-
-    if(type(result) == list):
-        client_json = json.dumps(result, default=str)
-        return client_json
+    if (type(result) == list):
+        return make_response(jsonify(result), 200)
     else:
-        print('error, error, error ')
+        return make_response(jsonify(result), 400)
+
+
 
 @app.patch('/api/client_update')
 
@@ -44,11 +44,11 @@ def update_client():
 
     result = dh.run_statement('CALL update_client(?,?,?)', 
     [username, old_password, new_password])
-    if(type(result) == list):
-            client_json = json.dumps(result, default=str)
-            return client_json
+    if (type(result) == list):
+        return make_response(jsonify(result), 200)
     else:
-        print('error, error, error ')
+        return make_response(jsonify(result), 400)
+   
 
 
 
